@@ -1,0 +1,7 @@
+# 构建产物
+*.zip
+# 临时/系统
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

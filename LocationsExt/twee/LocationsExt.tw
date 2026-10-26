@@ -1,0 +1,160 @@
+:: Inn
+<<set $outside to 0>>
+<<effects>>
+旅店门内挂着昏黄的灯，前台后面站着一位打着哈欠的店员。柜台上的木牌写着：单间，每晚 £40。
+<<if $money gte 4000>>
+	<<link [[租一间房过夜（£40）|Inn Sleep]]>><<money -4000>><<set $caeInnStays to ($caeInnStays or 0) + 1>><</link>>
+<<else>>
+	<br><span class="red">你身上的钱不够付房钱。</span>
+<</if>>
+<br>
+<<if $caeInnStays gte 1>>
+	<<link [[使用淋浴间（租客免费）|Inn Shower]]>><</link>>
+<<elseif $money gte 500>>
+	<<link [[去淋浴间洗个澡（£5）|Inn Shower]]>><<money -500>><</link>>
+<<else>>
+	<span class="red">你连洗澡的 £5 都拿不出来。</span>
+<</if>>
+<br><br>
+<<link [[离开旅店|High Street]]>><</link>>
+
+:: Inn Sleep
+<<sleep>>
+<<effects>>
+<<wakingEffects $sleepHoursTotal>>
+你睡得还算安稳，楼下的街道声一直没停，但至少有一张干净的床。
+<br><br>
+<<link [[下楼，离开旅店|High Street]]>><</link>>
+
+:: Inn Shower
+<<set $outside to 0>>
+<<effects>>
+热水很快充满了小小的淋浴间，水汽糊住了镜子。你把一路的风尘都冲干净了。<<wash>>
+<br><br>
+<<link [[擦干，回到前台|Inn]]>><</link>>
+
+:: Flats Room Sale
+<<set $outside to 0>>
+<<effects>>
+<<if $caeFlatsRoom is 1>>
+	这间房已经是你的了，门上的钥匙牌换成了你的名字。
+	<br><br>
+	<<link [[进去看看|Flats Own Room]]>><</link>>
+<<else>>
+	管理员带你看了走廊尽头那间空置的一居室。房间不大，但收拾得干净，还带一张床和一扇能望见街道的窗。"£62000，一次付清。"他说。
+	<br><br>
+	<<if $money gte 6200000>>
+		<<link [[买下这间房（£62000）|Flats Room Sale]]>><<money -6200000>><<set $caeFlatsRoom to 1>><</link>>
+	<<else>>
+		<span class="red">你的钱不够。</span>
+	<</if>>
+<</if>>
+<br><br>
+<<link [[离开|Flats]]>><</link>>
+
+:: Flats Own Room
+<<set $outside to 0>>
+<<effects>>
+这是你买下的房间。一张铺得整齐的床靠着墙，窗外的街灯照进来一小片光。
+<<if $caeFlatsBed is 1>>
+	<br><span class="lblue">床垫换过了，躺上去会陷进柔软里。</span>
+<</if>>
+<<if $caeFlatsBath is 1>>
+	<br><span class="lblue">角落里多了一间小小的淋浴间。</span>
+<</if>>
+<<if $caeFlatsShelf is 1>>
+	<br><span class="lblue">墙边立着一个小小的书架，上面堆着你收来的旧书。</span>
+<</if>>
+<br><br>
+<<link [[睡一觉|Flats Own Room Sleep]]>><</link>>
+<br>
+<<link [[衣柜|Flats Own Wardrobe]]>><</link>>
+<br>
+<<if $caeFlatsBath is 1>>
+	<<link [[洗个澡|Flats Own Shower]]>><</link>>
+	<br>
+<</if>>
+<<if $caeFlatsShelf is 1 and $daily.caeFlatsRead isnot 1>>
+	<<link [[在书架前看书放松（0:30）|Flats Own Read]]>><<pass 30>><</link>>
+	<br>
+<</if>>
+<<link [[看看能添置什么|Flats Own Upgrade]]>><</link>>
+<br>
+<<link [[离开房间|Flats]]>><</link>>
+
+:: Flats Own Room Sleep
+<<sleep>>
+<<effects>>
+<<wakingEffects $sleepHoursTotal>>
+<<if $caeFlatsBed is 1>>
+	<<set $stress to Math.max(0, $stress - 100)>>
+	<<set $trauma to Math.max(0, $trauma - 1)>>
+	你在舒适的床垫上睡得很沉，连梦都没做一个，醒来时浑身轻松。
+<<else>>
+	你在自己的房间醒来，窗外隐约传来早班公交的声音。
+<</if>>
+<br><br>
+<<link [[起床|Flats Own Room]]>><</link>>
+
+:: Flats Own Shower
+<<set $outside to 0>>
+<<effects>>
+淋浴间里的热水很足。你冲掉一身的疲惫，把自己洗得干干净净。<<wash>>
+<br><br>
+<<link [[擦干，回到房间|Flats Own Room]]>><</link>>
+
+:: Flats Own Wardrobe
+<<effects>>
+<<set $wardrobe_location to "wardrobe">>
+<<wardrobeSelection>>
+你打开房间里的衣柜。<br><br>
+<div id="wardrobewear"><<wardrobewear>></div>
+<div id="wardrobeExits"><<link [[关上衣柜|Flats Own Room]]>><<cleanupOnWardrobeExit>><</link>></div>
+
+<<wardrobe>>
+
+:: Flats Own Read
+<<set $outside to 0>>
+<<effects>>
+<<set $daily.caeFlatsRead to 1>>
+<<set $stress to Math.max(0, $stress - 200)>>
+你在书架前坐下，翻开一本旧书。纸页的味道让人放松下来。
+<br><br>
+<<link [[合上书|Flats Own Room]]>><</link>>
+
+:: Flats Own Upgrade
+<<set $outside to 0>>
+<<effects>>
+你打量着这间房，盘算还能添置些什么。
+<br><br>
+<<if $caeFlatsBed isnot 1>>
+	<<if $money gte 30000>>
+		<<link [[换一张舒适床垫（£300）|Flats Own Upgrade]]>><<money -30000>><<set $caeFlatsBed to 1>><</link>>
+	<<else>>
+		<span class="red">换一张舒适床垫（£300）：你的钱不够。</span>
+	<</if>>
+<<else>>
+	<span class="blue">床垫已经是舒适的了。</span>
+<</if>>
+<br><br>
+<<if $caeFlatsBath isnot 1>>
+	<<if $money gte 20000>>
+		<<link [[加装一间小小的淋浴间（£200）|Flats Own Upgrade]]>><<money -20000>><<set $caeFlatsBath to 1>><</link>>
+	<<else>>
+		<span class="red">加装淋浴间（£200）：你的钱不够。</span>
+	<</if>>
+<<else>>
+	<span class="blue">房间里已经有淋浴间了。</span>
+<</if>>
+<br><br>
+<<if $caeFlatsShelf isnot 1>>
+	<<if $money gte 15000>>
+		<<link [[买一个二手书架（£150）|Flats Own Upgrade]]>><<money -15000>><<set $caeFlatsShelf to 1>><</link>>
+	<<else>>
+		<span class="red">二手书架（£150）：你的钱不够。</span>
+	<</if>>
+<<else>>
+	<span class="blue">书架已经摆好了。</span>
+<</if>>
+<br><br>
+<<link [[回房间|Flats Own Room]]>><</link>>
